@@ -38,3 +38,21 @@ body {
   color: var(--foreground);
   font-family: var(--font-thmanyah-sans), system-ui, sans-serif;
 }
+
+/* Smooth quantity number transition */
+@media (prefers-reduced-motion: no-preference) {
+  .qty-pop {
+    animation: qty-pop 180ms ease-out;
+  }
+}
+
+@keyframes qty-pop {
+  from {
+    transform: scale(0.82);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

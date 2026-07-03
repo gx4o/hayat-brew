@@ -46,7 +46,7 @@ export function LastBrew() {
 
   if (!brew) return null;
 
-  const href = `/brew/${brew.equipmentSlug}?style=${brew.style}&unit=${brew.unitSlug}&qty=${brew.quantity}`;
+  const href = `/brew/${brew.equipmentSlug}/result?style=${brew.style}&unit=${brew.unitSlug}&qty=${brew.quantity}`;
 
   return (
     <section aria-label="آخر قهوة" className="mt-6 lg:mt-8">
