@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { BottomNav } from "@/components/BottomNav";
 import "./globals.css";
 
 const thmanyahSans = localFont({
@@ -27,6 +28,10 @@ export const metadata: Metadata = {
   description: "حاسبة وصفات القهوة ودليل التحضير للعائلة",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#faf6f0",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,7 +43,10 @@ export default function RootLayout({
       dir="rtl"
       className={`${thmanyahSans.variable} ${thmanyahSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <BottomNav />
+      </body>
     </html>
   );
 }

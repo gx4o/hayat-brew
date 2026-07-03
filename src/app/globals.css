@@ -1,15 +1,36 @@
 @import "tailwindcss";
 
+/*
+ * Hayat Brew design tokens — "a quiet, warm coffee corner at home".
+ * Ratio principle: ~60% warm background, 25% cream surfaces,
+ * 10% espresso typography, 5% caramel accent.
+ */
 :root {
-  --background: #faf6f0;
-  --foreground: #3b2a20;
+  --background: #e8d8c5; /* warm oat canvas */
+  --card: #fff8f0; /* cream surfaces */
+  --foreground: #4b2e2b; /* espresso text */
+  --muted: #8c5a3c; /* secondary brown */
+  --accent: #c08552; /* caramel — selective use only */
+  --accent-deep: #a96f3f; /* hover/pressed caramel */
+  --line: rgba(75, 46, 43, 0.1); /* subtle border definition */
+  --iced: #4f83a3; /* reserved for iced states later */
+  --iced-soft: #e4eef5;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-card: var(--card);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-line: var(--line);
+  --color-iced: var(--iced);
+  --color-iced-soft: var(--iced-soft);
   --font-sans: var(--font-thmanyah-sans);
   --font-display: var(--font-thmanyah-serif);
+  --radius-card: 1.75rem;
+  --shadow-card: 0 2px 12px rgba(75, 46, 43, 0.07);
 }
 
 body {
