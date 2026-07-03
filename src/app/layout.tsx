@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const thmanyahSans = localFont({
+  src: [
+    { path: "../fonts/thmanyahsans-Regular.woff2", weight: "400" },
+    { path: "../fonts/thmanyahsans-Medium.woff2", weight: "500" },
+    { path: "../fonts/thmanyahsans-Bold.woff2", weight: "700" },
+    { path: "../fonts/thmanyahsans-Black.woff2", weight: "900" },
+  ],
+  variable: "--font-thmanyah-sans",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const thmanyahSerif = localFont({
+  src: [
+    { path: "../fonts/thmanyahserifdisplay-Medium.woff2", weight: "500" },
+    { path: "../fonts/thmanyahserifdisplay-Bold.woff2", weight: "700" },
+  ],
+  variable: "--font-thmanyah-serif",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +36,7 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${thmanyahSans.variable} ${thmanyahSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

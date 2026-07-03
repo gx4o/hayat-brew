@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Licensed fonts — never commit (see scripts/fetch-fonts.mjs)
+src/fonts/
