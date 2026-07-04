@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FavoriteButton } from "@/components/brew/FavoriteButton";
 import { SaveLastBrew } from "@/components/brew/SaveLastBrew";
 import {
   IconBean,
@@ -178,6 +179,16 @@ export default async function ResultPage({
             >
               إعادة الحساب
             </Link>
+            <FavoriteButton
+              recipeSlug={recipe.slug}
+              recipeNameAr={recipe.nameAr}
+              equipmentSlug={equipmentSlug}
+              style={style}
+              unitSlug={unit.slug}
+              unitNameAr={unit.nameAr}
+              quantity={quantity}
+              defaultName={title}
+            />
           </div>
         </section>
       </div>

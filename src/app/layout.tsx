@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { BottomNav } from "@/components/BottomNav";
+import { RegisterSW } from "@/components/RegisterSW";
 import "./globals.css";
 
 const thmanyahSans = localFont({
@@ -26,6 +27,11 @@ const thmanyahSerif = localFont({
 export const metadata: Metadata = {
   title: "Hayat Brew",
   description: "حاسبة وصفات القهوة ودليل التحضير للعائلة",
+  appleWebApp: {
+    capable: true,
+    title: "Hayat Brew",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
@@ -46,6 +52,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         {children}
         <BottomNav />
+        <RegisterSW />
       </body>
     </html>
   );

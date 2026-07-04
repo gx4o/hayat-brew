@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { LAST_BREW_KEY } from "@/components/LastBrew";
+import { FAVORITES_KEY } from "@/lib/favorites";
 import {
   DEFAULT_SETTINGS,
   loadSettings,
@@ -87,13 +88,20 @@ export function SettingsPanel() {
         onChange={(v) => update({ keepScreenAwake: v })}
       />
 
-      <div className="pt-4">
+      <div className="space-y-3 pt-4">
         <button
           type="button"
           onClick={() => clearKey(LAST_BREW_KEY, "انمسحت آخر قهوة")}
           className="w-full rounded-card border border-line bg-card px-5 py-4 text-right text-lg text-muted transition-colors hover:text-foreground"
         >
           مسح آخر الوصفات
+        </button>
+        <button
+          type="button"
+          onClick={() => clearKey(FAVORITES_KEY, "انمسحت المفضلة")}
+          className="w-full rounded-card border border-line bg-card px-5 py-4 text-right text-lg text-muted transition-colors hover:text-foreground"
+        >
+          مسح المفضلة
         </button>
       </div>
 

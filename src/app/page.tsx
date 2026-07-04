@@ -1,4 +1,5 @@
 import { EquipmentCard } from "@/components/EquipmentCard";
+import { FavoritesList } from "@/components/FavoritesList";
 import { Greeting } from "@/components/Greeting";
 import { LastBrew } from "@/components/LastBrew";
 import { supabase } from "@/lib/supabase";
@@ -49,6 +50,7 @@ export default async function HomePage() {
       </div>
 
       <LastBrew />
+      <FavoritesList />
     </main>
   );
 }

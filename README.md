@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hayat Brew ☕
 
-## Getting Started
+حاسبة وصفات القهوة ودليل التحضير الموجّه للعائلة — عربي بالكامل، RTL-first، مصمم لجوال iPhone ولوضع المطبخ الأفقي على iPad.
 
-First, run the development server:
+**Production:** https://hayat-brew.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## What it does
+
+Choose a brewing method (coffee machine / V60) → hot or iced → serving unit (كوب 200ml / مق 323ml) → quantity (0.5 steps) → get an exact calculated recipe → optionally start guided step-by-step brewing with a circular timer, wake lock, and an iPad-landscape kitchen mode.
+
+## Stack
+
+| Layer | Tech |
+|---|---|
+| Frontend | Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 |
+| Database | Supabase PostgreSQL (recipe definitions, RLS read-only for anon) |
+| Hosting | Vercel (auto-deploy from `main`) |
+| Fonts | Thmanyah Sans + Serif Display (licensed — see Fonts) |
+| PWA | Installable, offline app shell via service worker |
+
+## Architecture
+
+```
+src/
+  lib/
+    recipe-engine/     # Pure TS calculation engine + vitest suite (no DB, no UI)
+    data.ts            # Supabase → engine-type mappers
+    illustrations.ts   # Official artwork registry + step-art mapping
+    favorites.ts       # localStorage favorites (selection only, never results)
+    settings.ts        # Timer sound/vibration, wake lock prefs
+    arabic.ts          # Natural Arabic quantity phrasing (كوبين، 3 أكواب ونص)
+  app/
+    page.tsx                       # Home: greeting, method cards, last brew, favorites
+    recipes/  settings/            # Recipe list · functional preferences
+    brew/[equipment]/              # URL-driven wizard: ?style=&unit= (+qty)
+    brew/[equipment]/result/       # Calculated recipe (splits on iPad landscape)
+    brew/[equipment]/guide/        # Guided brewing + kitchen mode
+supabase/migrations/               # Schema + seeded family recipes
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Key principle:** all amounts are calculated by `calculateRecipe()` from recipe definitions stored per one reference serving (200 ml). Last-brew and favorites store the *selection* only — numbers are always recalculated live, never cached.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local development
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+cp .env.example .env.local   # fill in the two public Supabase values
+npm run dev                  # http://localhost:3000
+npm test                     # recipe engine QA suite (29 tests)
+```
 
-## Learn More
+### Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Where | Notes |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `.env.local` + Vercel | public |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `.env.local` + Vercel | public — data is protected by RLS, writes are denied |
+| `FONTS_ARCHIVE_URL` | `.env.local` + Vercel | signed URL to the private fonts archive (see Fonts) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Never use or commit the Supabase `service_role` key anywhere in this project.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Fonts (important)
 
-## Deploy on Vercel
+The Thmanyah typeface license **forbids redistributing font files**, and this repo is public — so the fonts are never committed:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/fonts/` is gitignored; locally the files just live there.
+- On Vercel, `scripts/fetch-fonts.mjs` (npm `prebuild`) downloads `hayat-brew-fonts.tar.gz` from a **private Supabase Storage bucket** via the signed `FONTS_ARCHIVE_URL` and unpacks it before the build.
+- If the signed URL expires (~yearly), create a new one from Supabase Storage → `assets` bucket and update the env var in Vercel + `.env.local`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Database
+
+Five tables: `equipment`, `serving_units`, `recipes`, `recipe_ingredients`, `recipe_steps`. Recipes are data-driven (ingredients are open-ended slugs, steps carry optional timers and cumulative pour fractions) so a future custom-recipe builder needs no schema change. RLS: public `select` only — there are no write policies.
+
+Apply schema changes via the Supabase CLI:
+
+```bash
+supabase link --project-ref <ref>   # once
+supabase db push                    # applies supabase/migrations/*
+```
+
+## Deploy flow
+
+```
+edit locally → git commit → git push → Vercel builds & deploys main
+```
+
+Preview deployments: push any non-main branch and Vercel creates a preview URL.
+
+## Testing
+
+- `npm test` — engine suite covering every QA case in the spec (ratios, mug scaling, pour stages, placeholder resolution, edge quantities).
+- Manual device QA: iPhone portrait, iPad landscape kitchen mode, PWA install, offline reload, timer vibration/sound, reduced-motion.
