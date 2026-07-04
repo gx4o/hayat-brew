@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import hotCupArt from "@/assets/illustrations/hot-cup.webp";
 import { OptionCard } from "@/components/brew/OptionCard";
 import { QuantityPicker } from "@/components/brew/QuantityPicker";
-import { IconCup, IconIcedGlass, IconMug } from "@/components/icons";
 import { getEquipmentInfo, getServingUnits } from "@/lib/data";
+import { ART, type ArtKey } from "@/lib/illustrations";
 import type { RecipeStyle } from "@/lib/recipe-engine";
 
 export const revalidate = 3600;
@@ -70,31 +69,24 @@ export default async function BrewFlowPage({
           كيف تبي قهوتك؟
         </h1>
         <div className="mt-9 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-          {equipment.styles.map((s) =>
-            s === "hot" ? (
+          {equipment.styles.map((s) => {
+            const art = ART[s === "hot" ? "hot-coffee" : "iced-coffee"];
+            return (
               <OptionCard
                 key={s}
-                href={`${base}?style=hot`}
-                title={STYLE_META.hot.title}
+                href={`${base}?style=${s}`}
+                title={STYLE_META[s].title}
                 visual={
-                  <div className="h-full w-full overflow-hidden rounded-[1.25rem]" style={{ backgroundColor: "#fbf1df" }}>
-                    <Image src={hotCupArt} alt="" className="h-full w-full object-cover" />
+                  <div
+                    className="h-full w-full overflow-hidden rounded-[1.25rem]"
+                    style={{ backgroundColor: art.canvas }}
+                  >
+                    <Image src={art.src} alt="" className="h-full w-full object-cover" />
                   </div>
                 }
               />
-            ) : (
-              <OptionCard
-                key={s}
-                href={`${base}?style=iced`}
-                title={STYLE_META.iced.title}
-                visual={
-                  <div className="flex h-full w-full items-center justify-center rounded-[1.25rem] bg-iced-soft">
-                    <IconIcedGlass className="h-20 w-20 text-iced sm:h-24 sm:w-24" />
-                  </div>
-                }
-              />
-            )
-          )}
+            );
+          })}
         </div>
       </main>
     );
@@ -118,13 +110,19 @@ export default async function BrewFlowPage({
               href={`${base}?style=${style}&unit=${u.slug}`}
               title={u.nameAr}
               subtitle={`${u.volumeMl} مل`}
-              visual={
-                u.slug === "mug" ? (
-                  <IconMug className="h-28 w-28 text-muted sm:h-32 sm:w-32" />
-                ) : (
-                  <IconCup className="h-20 w-20 text-muted sm:h-24 sm:w-24" />
-                )
-              }
+              visual={(() => {
+                const art = ART[(u.slug === "mug" ? "mug" : "cup") as ArtKey];
+                const size =
+                  u.slug === "mug" ? "h-full w-full" : "h-[78%] w-[78%]";
+                return (
+                  <div
+                    className="flex h-full w-full items-center justify-center overflow-hidden rounded-[1.25rem]"
+                    style={{ backgroundColor: art.canvas }}
+                  >
+                    <Image src={art.src} alt="" className={`${size} object-cover`} />
+                  </div>
+                );
+              })()}
             />
           ))}
         </div>

@@ -1,15 +1,10 @@
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
-import coffeeMachineArt from "@/assets/illustrations/coffee-machine.webp";
-import v60PourArt from "@/assets/illustrations/v60-pour.webp";
+import { ART } from "@/lib/illustrations";
 
-/**
- * Official illustration per equipment slug. `canvas` is each artwork's own
- * background color — the media area uses it so the image blends seamlessly.
- */
-const ART_BY_SLUG: Record<string, { src: StaticImageData; canvas: string }> = {
-  "coffee-machine": { src: coffeeMachineArt, canvas: "#fdf9f2" },
-  v60: { src: v60PourArt, canvas: "#fbf3e8" },
+const CARD_ART: Record<string, keyof typeof ART> = {
+  "coffee-machine": "coffee-machine",
+  v60: "v60",
 };
 
 export function EquipmentCard({
@@ -21,7 +16,7 @@ export function EquipmentCard({
   nameAr: string;
   subtitleAr: string | null;
 }) {
-  const art = ART_BY_SLUG[slug];
+  const art = CARD_ART[slug] ? ART[CARD_ART[slug]] : null;
 
   return (
     <Link
